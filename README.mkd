@@ -1,0 +1,61 @@
+# NAME
+
+SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
+
+# VERSION
+
+version 0.001
+
+# SYNOPSIS
+
+    use SMS::Send;
+
+    # create the sender object
+    my $sender = SMS::Send->new('KR::CoolSMS',
+        _ssl      => 1,
+        _user     => 'keedi',
+        _password => 'mypass',
+        _type     => 'sms',
+        _from     => '01025116893',
+    );
+
+    # send a message
+    my $sent = $sender->send_sms(
+        text => 'You message may use up to 80 chars and must be utf8',
+        to   => '01025116893',
+    );
+
+    unless ( $sent->{success} ) {
+        warn "failed to send sms: $sent->{reason}\n";
+
+        # if you want to know detail more, check $sent->{detail}
+        use Data::Dumper;
+        warn Dumper $sent->{detail};
+    }
+
+# DESCRIPTION
+
+SMS::Send driver for sending SMS messages with the [coolsms SMS service](http://api.coolsms.co.kr).
+
+# METHODS
+
+## new
+
+This constructor should not be called directly. See [SMS::Send](http://search.cpan.org/perldoc?SMS::Send) for details.
+
+# SEE ALSO
+
+- [SMS::Send](http://search.cpan.org/perldoc?SMS::Send)
+- [SMS::Send::Driver](http://search.cpan.org/perldoc?SMS::Send::Driver)
+- [coolsms API Manual](http://api.coolsms.co.kr)
+
+# AUTHOR
+
+Keedi Kim - 김도형 <keedi@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Keedi Kim.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.

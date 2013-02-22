@@ -5,6 +5,10 @@ use strict;
 use warnings;
 use parent qw( SMS::Send::Driver );
 
+use HTTP::Tiny;
+
+my $URL = "api.coolsms.co.kr/sendmsg";
+
 our $AGENT   = 'SMS-Send-KR-CoolSMS/' . $SMS::Send::KR::CoolSMS::VERSION;
 our $SSL     = 0;
 our $TIMEOUT = 3;
@@ -32,6 +36,69 @@ sub new {
 
     my $self = bless \%params, $class;
     return $self;
+}
+
+sub send_sms {
+    my $self   = shift;
+    my %params = (
+        _datetime => q{},
+        _mid      => q{},
+        _gid      => q{},
+        @_,
+    );
+
+    my $text     = $params{text};
+    my $to       = $params{to};
+    my $datetime = $params{_datetime};
+    my $mid      = $params{_mid};
+    my $gid      = $params{_gid};
+
+    my %ret = (
+        success => 0,
+        reason  => q{},
+        detail  => +{},
+    );
+
+    $ret{reason} = 'text is needed', return \%ret unless $text;
+    $ret{reason} = 'to is needed',   return \%ret unless $to;
+
+    my $http = HTTP::Tiny->new(
+        agent       => $self->{_agent},
+        timeout     => $self->{_timeout},
+        SSL_options => { SSL_hostname => q{} }, # coolsms does not support SNI
+    ) or $ret{reason} = 'cannot generate HTTP::Tiny object', return \%ret;
+
+    my $url  = $self->{_ssl} ? "https://$URL" : "http://$URL";
+    my %form = (
+        user     => $self->{_user},
+        password => $self->{_password},
+        enc      => $self->{_enc},
+        from     => $self->{_from},
+        type     => $self->{_type},
+        country  => $self->{_country},
+        to       => $to,
+        text     => $text,
+        datetime => $datetime,
+        mid      => $mid,
+        gid      => $gid,
+    );
+    $form{$_} or delete $form{$_} for keys %form;
+
+    my $res = $http->post_form( $url, \%form );
+    $ret{reason} = 'cannot get valid response for POST request';
+    if ( $res && $res->{success} ) {
+        my %params = ( $res->{content} =~ /^([^=]+)=(.*?)$/gms );
+
+        $ret{detail}  = \%params;
+        $ret{reason}  = $params{'RESULT-MESSAGE'};
+        $ret{success} = 1 if $params{'RESULT-CODE'} eq '00';
+    }
+    else {
+        $ret{detail} = $res;
+        $ret{reason} = $res->{reason};
+    }
+
+    return \%ret;
 }
 
 1;

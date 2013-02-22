@@ -1,0 +1,4 @@
+Release history for SMS::Send::KR::CoolSMS
+
+0.001       2013-02-23 03:13:26 Asia/Seoul
+    - implement sending sms type

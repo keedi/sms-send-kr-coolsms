@@ -1,8 +1,9 @@
 package SMS::Send::KR::CoolSMS;
 # ABSTRACT: An SMS::Send driver for the coolsms.co.kr service
 
-use Moo;
-use namespace::autoclean;
+use strict;
+use warnings;
+use parent qw( SMS::Send::Driver );
 
 1;
 __END__

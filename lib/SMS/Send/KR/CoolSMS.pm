@@ -174,13 +174,32 @@ sub send_sms {
         $password = md5_hex( $self->{_password} );
     }
 
+    #
+    # Adjust country code and destination number
+    #
+    my $country = $self->{_country},
+    if ( $to =~ /^+(\d{2})/ ) {
+        my $no = $1;
+        if ( $country_no{$no} ) {
+            $country = $country_no{$no}{code};
+            $to      =~ s/^+\d{2}//;
+        }
+    }
+    elsif ( $to =~ /^+(\d{3})/ ) {
+        my $no = $1;
+        if ( $country_no{$no} ) {
+            $country = $country_no{$no}{code};
+            $to      =~ s/^+\d{2}//;
+        }
+    }
+
     my %form = (
         user     => $self->{_user},
         password => $password,
         enc      => $self->{_enc},
         from     => $self->{_from},
         type     => $self->{_type},
-        country  => $self->{_country},
+        country  => $country,
         to       => $to,
         text     => $text,
         datetime => $datetime,

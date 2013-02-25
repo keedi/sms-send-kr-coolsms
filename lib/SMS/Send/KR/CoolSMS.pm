@@ -58,7 +58,7 @@ my %country_code = (
     IE => { code => "IE", no => 353, name => "Ireland" },
     IL => { code => "IL", no => 972, name => "Israel" },
     IT => { code => "IT", no => 39,  name => "Italy" },
-    JP => { code => "JP", no => 89,  name => "Japan" },
+    JP => { code => "JP", no => 81,  name => "Japan" },
     KZ => { code => "KZ", no => 7,   name => "Kazakhstan" },
     KE => { code => "KE", no => 254, name => "Kenya" },
     KR => { code => "KR", no => 82,  name => "Korea" },

@@ -7,8 +7,7 @@ use parent qw( SMS::Send::Driver );
 
 use HTTP::Tiny;
 
-my $URL = "api.coolsms.co.kr/sendmsg";
-
+our $URL     = "api.coolsms.co.kr/sendmsg";
 our $AGENT   = 'SMS-Send-KR-CoolSMS/' . $SMS::Send::KR::CoolSMS::VERSION;
 our $SSL     = 0;
 our $TIMEOUT = 3;
@@ -18,6 +17,7 @@ our $COUNTRY = 'KR';
 sub new {
     my $class  = shift;
     my %params = (
+        _url      => $SMS::Send::KR::CoolSMS::URL,
         _agent    => $SMS::Send::KR::CoolSMS::AGENT,
         _ssl      => $SMS::Send::KR::CoolSMS::SSL,
         _timeout  => $SMS::Send::KR::CoolSMS::TIMEOUT,

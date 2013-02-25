@@ -34,7 +34,6 @@ my %country_code = (
     BG => { code => "BG", no => 359, name => "Bulgaria" },
     KH => { code => "KH", no => 855, name => "Cambodia" },
     CM => { code => "CM", no => 237, name => "Cameroon" },
-    CA => { code => "CA", no => 1,   name => "Canada" },
     CL => { code => "CL", no => 56,  name => "Chile" },
     CN => { code => "CN", no => 86,  name => "China" },
     CO => { code => "CO", no => 57,  name => "Colombia" },
@@ -109,7 +108,6 @@ my %country_code = (
     VN => { code => "VN", no => 84,  name => "Viet Nam" },
 );
 
-# 1 => [ CA / US ]
 # 7 => [ KZ / RU / UZ ]
 my %country_no = map { $country_code{$_}{no} => $country_code{$_} } keys %country_code;
 

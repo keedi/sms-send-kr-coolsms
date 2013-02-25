@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use parent qw( SMS::Send::Driver );
 
+use Digest::MD5 qw( md5_hex );
 use HTTP::Tiny;
 
 our $URL     = "api.coolsms.co.kr/sendmsg";
@@ -69,9 +70,15 @@ sub send_sms {
     ) or $ret{reason} = 'cannot generate HTTP::Tiny object', return \%ret;
 
     my $url  = $self->{_ssl} ? "https://$URL" : "http://$URL";
+
+    my $password;
+    if ( $self->{_enc} && $self->{_enc} =~ m/^md5$/i ) {
+        $password = md5_hex( $self->{_password} );
+    }
+
     my %form = (
         user     => $self->{_user},
-        password => $self->{_password},
+        password => $password,
         enc      => $self->{_enc},
         from     => $self->{_from},
         type     => $self->{_type},

@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use parent qw( SMS::Send::Driver );
 
+use DateTime;
 use Digest::MD5 qw( md5_hex );
 use HTTP::Tiny;
 
@@ -138,17 +139,17 @@ sub new {
 sub send_sms {
     my $self   = shift;
     my %params = (
-        _datetime => q{},
-        _mid      => q{},
-        _gid      => q{},
+        _epoch => q{},
+        _mid   => q{},
+        _gid   => q{},
         @_,
     );
 
-    my $text     = $params{text};
-    my $to       = $params{to};
-    my $datetime = $params{_datetime};
-    my $mid      = $params{_mid};
-    my $gid      = $params{_gid};
+    my $text  = $params{text};
+    my $to    = $params{to};
+    my $epoch = $params{_epoch};
+    my $mid   = $params{_mid};
+    my $gid   = $params{_gid};
 
     my %ret = (
         success => 0,
@@ -167,6 +168,9 @@ sub send_sms {
 
     my $url  = $self->{_ssl} ? "https://$URL" : "http://$URL";
 
+    #
+    # enc & password
+    #
     my $password;
     if ( $self->{_enc} && $self->{_enc} =~ m/^md5$/i ) {
         $password = md5_hex( $self->{_password} );
@@ -187,6 +191,18 @@ sub send_sms {
     elsif ( $to =~ /^\+(\d{3})/ && $country_no{$1} ) {
         $country = $country_no{$1}{code};
         $to      =~ s/^\+\d{3}//;
+    }
+
+    #
+    # datetime: reserve SMS
+    #
+    my $datetime;
+    if ( $epoch ) {
+        my $t = DateTime->from_epoch(
+            time_zone => 'Asia/Seoul',
+            epoch     => $epoch,
+        );
+        $datetime = $t->ymd(q{}) . $t->hms(q{});
     }
 
     my %form = (

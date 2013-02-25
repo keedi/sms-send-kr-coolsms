@@ -176,26 +176,17 @@ sub send_sms {
     # country & to: adjust country code and destination number
     #
     my $country = $self->{_country};
-    if ( $to =~ /^\+(\d{1})/ ) {
-        my $no = $1;
-        if ( $country_no{$no} ) {
-            $country = $country_no{$no}{code};
-            $to      =~ s/^\+\d{1}//;
-        }
+    if ( $to =~ /^\+(\d{1})/ && $country_no{$1} ) {
+        $country = $country_no{$1}{code};
+        $to      =~ s/^\+\d{1}//;
     }
-    elsif ( $to =~ /^\+(\d{2})/ ) {
-        my $no = $1;
-        if ( $country_no{$no} ) {
-            $country = $country_no{$no}{code};
-            $to      =~ s/^\+\d{2}//;
-        }
+    elsif ( $to =~ /^\+(\d{2})/ && $country_no{$1} ) {
+        $country = $country_no{$1}{code};
+        $to      =~ s/^\+\d{2}//;
     }
-    elsif ( $to =~ /^\+(\d{3})/ ) {
-        my $no = $1;
-        if ( $country_no{$no} ) {
-            $country = $country_no{$no}{code};
-            $to      =~ s/^\+\d{2}//;
-        }
+    elsif ( $to =~ /^\+(\d{3})/ && $country_no{$1} ) {
+        $country = $country_no{$1}{code};
+        $to      =~ s/^\+\d{3}//;
     }
 
     my %form = (

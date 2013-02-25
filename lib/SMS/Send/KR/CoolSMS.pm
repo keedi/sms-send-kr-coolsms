@@ -109,6 +109,10 @@ my %country_code = (
     VN => { code => "VN", no => 84,  name => "Viet Nam" },
 );
 
+# 1 => [ CA / US ]
+# 7 => [ KZ / RU / UZ ]
+my %country_no = map { $country_code{$_}{no} => $country_code{$_} } keys %country_code;
+
 sub new {
     my $class  = shift;
     my %params = (

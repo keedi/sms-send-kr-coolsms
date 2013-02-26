@@ -295,16 +295,12 @@ Available parameters are:
 =attr _url
 
 Do not change this value except for testing purpose.
-Default is C<api.coolsms.co.kr/sendmsg>.
-
-our $TIMEOUT = 3;
-our $TYPE    = 'sms';
-our $COUNTRY = 'KR';
+Default is C<"api.coolsms.co.kr/sendmsg">.
 
 =attr _agent
 
 The agent value is sent as the "User-Agent" header in the HTTP requests.
-Default is C<SMS-Send-KR-CoolSMS/#.###>.
+Default is C<"SMS-Send-KR-CoolSMS/#.###">.
 
 =attr _ssl
 
@@ -329,7 +325,7 @@ Password to login for coolsms.
 =attr _enc
 
 Password encryption method to transfer password over HTTP/HTTPS.
-Currently only C<md5> is supported.
+Currently only C<"md5"> is supported.
 
 =attr _from
 
@@ -340,13 +336,13 @@ Source number to send sms.
 
 Type of sms.
 Currently only C<sms> is supported.
-Default is C<sms>.
+Default is C<"sms">.
 
 =attr _country
 
 Country code to route the sms.
 This is for destination number.
-Default is C<KR>.
+Default is C<"KR">.
 
 
 =head1 SEE ALSO

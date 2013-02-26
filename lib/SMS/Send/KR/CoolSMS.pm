@@ -171,7 +171,7 @@ sub send_sms {
     #
     # enc & password
     #
-    my $password;
+    my $password = $self->{_password};
     if ( $self->{_enc} && $self->{_enc} =~ m/^md5$/i ) {
         $password = md5_hex( $self->{_password} );
     }

@@ -278,6 +278,77 @@ SMS::Send driver for sending SMS messages with the L<coolsms SMS service|http://
 This constructor should not be called directly. See L<SMS::Send> for details.
 
 
+=method send_sms
+
+This constructor should not be called directly. See L<SMS::Send> for details.
+
+Available parameters are:
+
+=for :list
+* text
+* to
+* _epoch
+* _mid
+* _gid
+
+
+=attr _url
+
+Do not change this value except for testing purpose.
+Default is C<api.coolsms.co.kr/sendmsg>.
+
+our $TIMEOUT = 3;
+our $TYPE    = 'sms';
+our $COUNTRY = 'KR';
+
+=attr _agent
+
+The agent value is sent as the "User-Agent" header in the HTTP requests.
+Default is C<SMS-Send-KR-CoolSMS/#.###>.
+
+=attr _ssl
+
+If this is set, then use HTTPS rather than HTTP.
+Default is C<0>.
+
+=attr _timeout
+
+HTTP request timeout seconds.
+Default is C<3>.
+
+=attr _user
+
+B<Required>.
+Username to login for coolsms.
+
+=attr _password
+
+B<Required>.
+Password to login for coolsms.
+
+=attr _enc
+
+Password encryption method to transfer password over HTTP/HTTPS.
+Currently only C<md5> is supported.
+
+=attr _from
+
+B<Required>.
+Source number to send sms.
+
+=attr _type
+
+Type of sms.
+Currently only C<sms> is supported.
+Default is C<sms>.
+
+=attr _country
+
+Country code to route the sms.
+This is for destination number.
+Default is C<KR>.
+
+
 =head1 SEE ALSO
 
 =for :list

@@ -1,5 +1,8 @@
 Release history for SMS::Send::KR::CoolSMS
 
+0.003       2013-02-26 16:04:49 Asia/Seoul
+    - fix user not found bug due to omitting password
+
 0.002       2013-02-26 11:26:09 Asia/Seoul
     - support reserve sms using epoch
     - adjust country code and destination number to support international sms

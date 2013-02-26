@@ -4,7 +4,7 @@ SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
 
 # VERSION
 
-version 0.002
+version 0.003
 
 # SYNOPSIS
 
@@ -42,16 +42,12 @@ SMS::Send driver for sending SMS messages with the [coolsms SMS service](http://
 ## \_url
 
 Do not change this value except for testing purpose.
-Default is `api.coolsms.co.kr/sendmsg`.
-
-our $TIMEOUT = 3;
-our $TYPE    = 'sms';
-our $COUNTRY = 'KR';
+Default is `"api.coolsms.co.kr/sendmsg"`.
 
 ## \_agent
 
 The agent value is sent as the "User-Agent" header in the HTTP requests.
-Default is `SMS-Send-KR-CoolSMS/#.###`.
+Default is `"SMS-Send-KR-CoolSMS/#.###"`.
 
 ## \_ssl
 
@@ -76,7 +72,7 @@ Password to login for coolsms.
 ## \_enc
 
 Password encryption method to transfer password over HTTP/HTTPS.
-Currently only `md5` is supported.
+Currently only `"md5"` is supported.
 
 ## \_from
 
@@ -87,13 +83,13 @@ Source number to send sms.
 
 Type of sms.
 Currently only `sms` is supported.
-Default is `sms`.
+Default is `"sms"`.
 
 ## \_country
 
 Country code to route the sms.
 This is for destination number.
-Default is `KR`.
+Default is `"KR"`.
 
 # METHODS
 

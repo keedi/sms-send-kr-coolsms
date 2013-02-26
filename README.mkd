@@ -4,7 +4,7 @@ SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
 
 # VERSION
 
-version 0.001
+version 0.002
 
 # SYNOPSIS
 
@@ -37,11 +37,81 @@ version 0.001
 
 SMS::Send driver for sending SMS messages with the [coolsms SMS service](http://api.coolsms.co.kr).
 
+# ATTRIBUTES
+
+## \_url
+
+Do not change this value except for testing purpose.
+Default is `api.coolsms.co.kr/sendmsg`.
+
+our $TIMEOUT = 3;
+our $TYPE    = 'sms';
+our $COUNTRY = 'KR';
+
+## \_agent
+
+The agent value is sent as the "User-Agent" header in the HTTP requests.
+Default is `SMS-Send-KR-CoolSMS/#.###`.
+
+## \_ssl
+
+If this is set, then use HTTPS rather than HTTP.
+Default is `0`.
+
+## \_timeout
+
+HTTP request timeout seconds.
+Default is `3`.
+
+## \_user
+
+__Required__.
+Username to login for coolsms.
+
+## \_password
+
+__Required__.
+Password to login for coolsms.
+
+## \_enc
+
+Password encryption method to transfer password over HTTP/HTTPS.
+Currently only `md5` is supported.
+
+## \_from
+
+__Required__.
+Source number to send sms.
+
+## \_type
+
+Type of sms.
+Currently only `sms` is supported.
+Default is `sms`.
+
+## \_country
+
+Country code to route the sms.
+This is for destination number.
+Default is `KR`.
+
 # METHODS
 
 ## new
 
 This constructor should not be called directly. See [SMS::Send](http://search.cpan.org/perldoc?SMS::Send) for details.
+
+## send\_sms
+
+This constructor should not be called directly. See [SMS::Send](http://search.cpan.org/perldoc?SMS::Send) for details.
+
+Available parameters are:
+
+- text
+- to
+- \_epoch
+- \_mid
+- \_gid
 
 # SEE ALSO
 

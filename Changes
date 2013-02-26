@@ -1,4 +1,10 @@
 Release history for SMS::Send::KR::CoolSMS
 
+0.002       2013-02-26 11:26:09 Asia/Seoul
+    - support reserve sms using epoch
+    - adjust country code and destination number to support international sms
+    - support password encryption using md5
+    - support to change coolsms api server URL as parameter
+
 0.001       2013-02-23 03:13:26 Asia/Seoul
     - implement sending sms type

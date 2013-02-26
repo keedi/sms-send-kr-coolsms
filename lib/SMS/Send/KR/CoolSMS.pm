@@ -5,19 +5,117 @@ use strict;
 use warnings;
 use parent qw( SMS::Send::Driver );
 
+use DateTime;
+use Digest::MD5 qw( md5_hex );
 use HTTP::Tiny;
 
-my $URL = "api.coolsms.co.kr/sendmsg";
-
+our $URL     = "api.coolsms.co.kr/sendmsg";
 our $AGENT   = 'SMS-Send-KR-CoolSMS/' . $SMS::Send::KR::CoolSMS::VERSION;
 our $SSL     = 0;
 our $TIMEOUT = 3;
 our $TYPE    = 'sms';
 our $COUNTRY = 'KR';
 
+#
+# supported country code from coolsms HTTP API PDF document
+# http://open.coolsms.co.kr/download/222303
+#
+my %country_code = (
+    AR => { code => "AR", no => 54,  name => "Argentina" },
+    AM => { code => "AM", no => 374, name => "Armenia" },
+    AU => { code => "AU", no => 61,  name => "Australia" },
+    AT => { code => "AT", no => 43,  name => "Austria" },
+    BH => { code => "BH", no => 973, name => "Bahrain" },
+    BD => { code => "BD", no => 880, name => "Bangladesh" },
+    BE => { code => "BE", no => 32,  name => "Belgium" },
+    BT => { code => "BT", no => 975, name => "Bhutan" },
+    BO => { code => "BO", no => 591, name => "Bolivia" },
+    BR => { code => "BR", no => 55,  name => "Brazil" },
+    BN => { code => "BN", no => 673, name => "Brunei Darussalam" },
+    BG => { code => "BG", no => 359, name => "Bulgaria" },
+    KH => { code => "KH", no => 855, name => "Cambodia" },
+    CM => { code => "CM", no => 237, name => "Cameroon" },
+    CL => { code => "CL", no => 56,  name => "Chile" },
+    CN => { code => "CN", no => 86,  name => "China" },
+    CO => { code => "CO", no => 57,  name => "Colombia" },
+    CU => { code => "CU", no => 53,  name => "Cuba" },
+    DK => { code => "DK", no => 45,  name => "Denmark" },
+    EG => { code => "EG", no => 20,  name => "Egypt" },
+    ET => { code => "ET", no => 251, name => "Ethiopia" },
+    FI => { code => "FI", no => 358, name => "Finland" },
+    FR => { code => "FR", no => 33,  name => "France" },
+    GA => { code => "GA", no => 241, name => "Gabon" },
+    DE => { code => "DE", no => 49,  name => "Germany" },
+    GH => { code => "GH", no => 233, name => "Ghana" },
+    GR => { code => "GR", no => 30,  name => "Greece" },
+    GL => { code => "GL", no => 299, name => "Greenland" },
+    GY => { code => "GY", no => 592, name => "Guyana" },
+    HK => { code => "HK", no => 852, name => "Hong Kong" },
+    HU => { code => "HU", no => 36,  name => "Hungary" },
+    IS => { code => "IS", no => 354, name => "Iceland" },
+    IN => { code => "IN", no => 91,  name => "India" },
+    IR => { code => "IR", no => 98,  name => "Iran" },
+    IQ => { code => "IQ", no => 964, name => "Iraq" },
+    IE => { code => "IE", no => 353, name => "Ireland" },
+    IL => { code => "IL", no => 972, name => "Israel" },
+    IT => { code => "IT", no => 39,  name => "Italy" },
+    JP => { code => "JP", no => 81,  name => "Japan" },
+    KZ => { code => "KZ", no => 7,   name => "Kazakhstan" },
+    KE => { code => "KE", no => 254, name => "Kenya" },
+    KR => { code => "KR", no => 82,  name => "Korea" },
+    KW => { code => "KW", no => 965, name => "Kuwait" },
+    LA => { code => "LA", no => 856, name => "Lao People's Democratic Republic" },
+    LB => { code => "LB", no => 961, name => "Lebanon" },
+    LY => { code => "LY", no => 218, name => "Libya" },
+    LU => { code => "LU", no => 352, name => "Luxembourg" },
+    MO => { code => "MO", no => 853, name => "Macao" },
+    MG => { code => "MG", no => 261, name => "Madagascar" },
+    MY => { code => "MY", no => 60,  name => "Malaysia" },
+    MX => { code => "MX", no => 52,  name => "Mexico" },
+    MC => { code => "MC", no => 377, name => "Monaco" },
+    MN => { code => "MN", no => 976, name => "Mongolia" },
+    MM => { code => "MM", no => 95,  name => "Myanmar" },
+    NP => { code => "NP", no => 977, name => "Nepal" },
+    NL => { code => "NL", no => 31,  name => "Netherlands" },
+    NZ => { code => "NZ", no => 64,  name => "New Zealand" },
+    NG => { code => "NG", no => 234, name => "Nigeria" },
+    NO => { code => "NO", no => 47,  name => "Norway" },
+    PK => { code => "PK", no => 92,  name => "Pakistan" },
+    PY => { code => "PY", no => 595, name => "Paraguay" },
+    PH => { code => "PH", no => 63,  name => "Philippines" },
+    PL => { code => "PL", no => 48,  name => "Poland" },
+    PT => { code => "PT", no => 351, name => "Portugal" },
+    RO => { code => "RO", no => 40,  name => "Romania" },
+    RU => { code => "RU", no => 7,   name => "Russian Federation" },
+    SN => { code => "SN", no => 221, name => "Senegal" },
+    SG => { code => "SG", no => 65,  name => "Singapore" },
+    SK => { code => "SK", no => 42,  name => "Slovakia" },
+    SI => { code => "SI", no => 386, name => "Slovenia" },
+    ZA => { code => "ZA", no => 27,  name => "South Africa" },
+    ES => { code => "ES", no => 34,  name => "Spain" },
+    LK => { code => "LK", no => 94,  name => "Sri Lanka" },
+    SZ => { code => "SZ", no => 268, name => "Swaziland" },
+    SE => { code => "SE", no => 46,  name => "Sweden" },
+    CH => { code => "CH", no => 41,  name => "Switzerland" },
+    SY => { code => "SY", no => 963, name => "Syrian Arab Republic" },
+    TW => { code => "TW", no => 886, name => "Taiwan" },
+    TH => { code => "TH", no => 66,  name => "Thailand" },
+    TR => { code => "TR", no => 90,  name => "Turkey" },
+    AE => { code => "AE", no => 971, name => "United Arab Emirates" },
+    GB => { code => "GB", no => 44,  name => "United Kingdom" },
+    US => { code => "US", no => 1,   name => "United States" },
+    UZ => { code => "UZ", no => 7,   name => "Uzbekistan" },
+    VE => { code => "VE", no => 58,  name => "Venezuela" },
+    VN => { code => "VN", no => 84,  name => "Viet Nam" },
+);
+
+# 7 => [ KZ / RU / UZ ]
+my %country_no = map { $country_code{$_}{no} => $country_code{$_} } keys %country_code;
+
 sub new {
     my $class  = shift;
     my %params = (
+        _url      => $SMS::Send::KR::CoolSMS::URL,
         _agent    => $SMS::Send::KR::CoolSMS::AGENT,
         _ssl      => $SMS::Send::KR::CoolSMS::SSL,
         _timeout  => $SMS::Send::KR::CoolSMS::TIMEOUT,
@@ -41,17 +139,17 @@ sub new {
 sub send_sms {
     my $self   = shift;
     my %params = (
-        _datetime => q{},
-        _mid      => q{},
-        _gid      => q{},
+        _epoch => q{},
+        _mid   => q{},
+        _gid   => q{},
         @_,
     );
 
-    my $text     = $params{text};
-    my $to       = $params{to};
-    my $datetime = $params{_datetime};
-    my $mid      = $params{_mid};
-    my $gid      = $params{_gid};
+    my $text  = $params{text};
+    my $to    = $params{to};
+    my $epoch = $params{_epoch};
+    my $mid   = $params{_mid};
+    my $gid   = $params{_gid};
 
     my %ret = (
         success => 0,
@@ -69,13 +167,51 @@ sub send_sms {
     ) or $ret{reason} = 'cannot generate HTTP::Tiny object', return \%ret;
 
     my $url  = $self->{_ssl} ? "https://$URL" : "http://$URL";
+
+    #
+    # enc & password
+    #
+    my $password;
+    if ( $self->{_enc} && $self->{_enc} =~ m/^md5$/i ) {
+        $password = md5_hex( $self->{_password} );
+    }
+
+    #
+    # country & to: adjust country code and destination number
+    #
+    my $country = $self->{_country};
+    if ( $to =~ /^\+(\d{1})/ && $country_no{$1} ) {
+        $country = $country_no{$1}{code};
+        $to      =~ s/^\+\d{1}//;
+    }
+    elsif ( $to =~ /^\+(\d{2})/ && $country_no{$1} ) {
+        $country = $country_no{$1}{code};
+        $to      =~ s/^\+\d{2}//;
+    }
+    elsif ( $to =~ /^\+(\d{3})/ && $country_no{$1} ) {
+        $country = $country_no{$1}{code};
+        $to      =~ s/^\+\d{3}//;
+    }
+
+    #
+    # datetime: reserve SMS
+    #
+    my $datetime;
+    if ( $epoch ) {
+        my $t = DateTime->from_epoch(
+            time_zone => 'Asia/Seoul',
+            epoch     => $epoch,
+        );
+        $datetime = $t->ymd(q{}) . $t->hms(q{});
+    }
+
     my %form = (
         user     => $self->{_user},
-        password => $self->{_password},
+        password => $password,
         enc      => $self->{_enc},
         from     => $self->{_from},
         type     => $self->{_type},
-        country  => $self->{_country},
+        country  => $country,
         to       => $to,
         text     => $text,
         datetime => $datetime,
@@ -140,6 +276,77 @@ SMS::Send driver for sending SMS messages with the L<coolsms SMS service|http://
 =method new
 
 This constructor should not be called directly. See L<SMS::Send> for details.
+
+
+=method send_sms
+
+This constructor should not be called directly. See L<SMS::Send> for details.
+
+Available parameters are:
+
+=for :list
+* text
+* to
+* _epoch
+* _mid
+* _gid
+
+
+=attr _url
+
+Do not change this value except for testing purpose.
+Default is C<api.coolsms.co.kr/sendmsg>.
+
+our $TIMEOUT = 3;
+our $TYPE    = 'sms';
+our $COUNTRY = 'KR';
+
+=attr _agent
+
+The agent value is sent as the "User-Agent" header in the HTTP requests.
+Default is C<SMS-Send-KR-CoolSMS/#.###>.
+
+=attr _ssl
+
+If this is set, then use HTTPS rather than HTTP.
+Default is C<0>.
+
+=attr _timeout
+
+HTTP request timeout seconds.
+Default is C<3>.
+
+=attr _user
+
+B<Required>.
+Username to login for coolsms.
+
+=attr _password
+
+B<Required>.
+Password to login for coolsms.
+
+=attr _enc
+
+Password encryption method to transfer password over HTTP/HTTPS.
+Currently only C<md5> is supported.
+
+=attr _from
+
+B<Required>.
+Source number to send sms.
+
+=attr _type
+
+Type of sms.
+Currently only C<sms> is supported.
+Default is C<sms>.
+
+=attr _country
+
+Country code to route the sms.
+This is for destination number.
+Default is C<KR>.
 
 
 =head1 SEE ALSO

@@ -4,7 +4,7 @@ SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
 
 # VERSION
 
-version 0.004
+version 0.005
 
 # SYNOPSIS
 

@@ -4,7 +4,7 @@ SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
 
 # VERSION
 
-version 0.003
+version 0.004
 
 # SYNOPSIS
 
@@ -36,6 +36,7 @@ version 0.003
 # DESCRIPTION
 
 SMS::Send driver for sending SMS messages with the [coolsms SMS service](http://api.coolsms.co.kr).
+You'll need [IO::Socket::SSL](http://search.cpan.org/perldoc?IO::Socket::SSL) at least 1.84 version to use SSL support for HTTPS.
 
 # ATTRIBUTES
 
@@ -113,6 +114,7 @@ Available parameters are:
 
 - [SMS::Send](http://search.cpan.org/perldoc?SMS::Send)
 - [SMS::Send::Driver](http://search.cpan.org/perldoc?SMS::Send::Driver)
+- [IO::Socket::SSL](http://search.cpan.org/perldoc?IO::Socket::SSL)
 - [coolsms API Manual](http://api.coolsms.co.kr)
 
 # AUTHOR

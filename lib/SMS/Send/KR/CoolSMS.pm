@@ -293,6 +293,7 @@ __END__
 =head1 DESCRIPTION
 
 SMS::Send driver for sending SMS messages with the L<coolsms SMS service|http://api.coolsms.co.kr>.
+You'll need L<IO::Socket::SSL> at least 1.84 version to use SSL support for HTTPS.
 
 
 =method new
@@ -372,4 +373,5 @@ Default is C<"KR">.
 =for :list
 * L<SMS::Send>
 * L<SMS::Send::Driver>
+* L<IO::Socket::SSL>
 * L<coolsms API Manual|http://api.coolsms.co.kr>

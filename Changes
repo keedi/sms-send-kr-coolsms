@@ -1,5 +1,8 @@
 Release history for SMS::Send::KR::CoolSMS
 
+    - remove IO::Socket::SSL module dependency
+      and loads it when user really want to use ssl
+
 0.003       2013-02-26 16:04:49 Asia/Seoul
     - fix user not found bug due to omitting password
 

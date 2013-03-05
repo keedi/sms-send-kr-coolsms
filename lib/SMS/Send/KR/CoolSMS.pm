@@ -132,6 +132,18 @@ sub new {
     warn("$class->new: _password is needed\n"), return unless $params{_password};
     warn("$class->new: _from is needed\n"),     return unless $params{_from};
 
+    #
+    # selective load IO::Socket::SSL
+    # some platforms does not support IO::Socket::SSL & Net::SSLeay
+    #
+    if ( $params{_ssl} ) {
+        my $ret = eval {require IO::Socket::SSL; IO::Socket::SSL->VERSION(1.84)};
+        unless ( $ret ) {
+            warn("$class->new: IO::Socket::SSL 1.84 must be installed for https support\n");
+            return;
+        }
+    }
+
     my $self = bless \%params, $class;
     return $self;
 }
@@ -160,13 +172,23 @@ sub send_sms {
     $ret{reason} = 'text is needed', return \%ret unless $text;
     $ret{reason} = 'to is needed',   return \%ret unless $to;
 
-    my $http = HTTP::Tiny->new(
-        agent       => $self->{_agent},
-        timeout     => $self->{_timeout},
-        SSL_options => { SSL_hostname => q{} }, # coolsms does not support SNI
-    ) or $ret{reason} = 'cannot generate HTTP::Tiny object', return \%ret;
-
-    my $url  = $self->{_ssl} ? "https://$URL" : "http://$URL";
+    my $http;
+    my $url;
+    if ( $self->{_ssl} ) {
+        $http = HTTP::Tiny->new(
+            agent       => $self->{_agent},
+            timeout     => $self->{_timeout},
+            SSL_options => { SSL_hostname => q{} }, # coolsms does not support SNI
+        ) or $ret{reason} = 'cannot generate HTTP::Tiny object', return \%ret;
+        $url = "https://$URL";
+    }
+    else {
+        $http = HTTP::Tiny->new(
+            agent   => $self->{_agent},
+            timeout => $self->{_timeout},
+        ) or $ret{reason} = 'cannot generate HTTP::Tiny object', return \%ret;
+        $url  = "http://$URL";
+    }
 
     #
     # enc & password
@@ -271,6 +293,7 @@ __END__
 =head1 DESCRIPTION
 
 SMS::Send driver for sending SMS messages with the L<coolsms SMS service|http://api.coolsms.co.kr>.
+You'll need L<IO::Socket::SSL> at least 1.84 version to use SSL support for HTTPS.
 
 
 =method new
@@ -350,4 +373,5 @@ Default is C<"KR">.
 =for :list
 * L<SMS::Send>
 * L<SMS::Send::Driver>
+* L<IO::Socket::SSL>
 * L<coolsms API Manual|http://api.coolsms.co.kr>

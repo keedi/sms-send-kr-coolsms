@@ -1,5 +1,8 @@
 Release history for SMS::Send::KR::CoolSMS
 
+0.005       2013-03-05 17:32:08 Asia/Seoul
+    - fix mis-packaging
+
 0.004       2013-03-05 16:20:00 Asia/Seoul
     - remove IO::Socket::SSL module dependency
       and loads it when user really want to use ssl

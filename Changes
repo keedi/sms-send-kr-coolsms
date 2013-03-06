@@ -1,5 +1,7 @@
 Release history for SMS::Send::KR::CoolSMS
 
+    - force die when object creation is failed
+
 0.006       2013-03-05 18:00:05 Asia/Seoul
     - force remove IO::Socket::SSL module dependency
       to prevent dist zilla setting it automatically

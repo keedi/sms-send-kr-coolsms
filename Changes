@@ -1,5 +1,7 @@
 Release history for SMS::Send::KR::CoolSMS
 
+    - support overriding `_from` when sending SMS
+
 0.007       2013-03-06 16:03:01 Asia/Seoul
     - force die when object creation is failed
 

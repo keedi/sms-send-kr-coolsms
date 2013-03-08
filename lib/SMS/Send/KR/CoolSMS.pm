@@ -159,6 +159,7 @@ sub send_sms {
 
     my $text  = $params{text};
     my $to    = $params{to};
+    my $from  = $params{_from} || $self->{_from};
     my $epoch = $params{_epoch};
     my $mid   = $params{_mid};
     my $gid   = $params{_gid};
@@ -231,7 +232,7 @@ sub send_sms {
         user     => $self->{_user},
         password => $password,
         enc      => $self->{_enc},
-        from     => $self->{_from},
+        from     => $from,
         type     => $self->{_type},
         country  => $country,
         to       => $to,
@@ -277,8 +278,9 @@ __END__
 
     # send a message
     my $sent = $sender->send_sms(
-        text => 'You message may use up to 80 chars and must be utf8',
-        to   => '01025116893',
+        text  => 'You message may use up to 80 chars and must be utf8',
+        to    => '01025116893',
+        _from => '02114', # you can override $self->_from
     );
 
     unless ( $sent->{success} ) {

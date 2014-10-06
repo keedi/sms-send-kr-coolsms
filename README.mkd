@@ -4,7 +4,7 @@ SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
 
 # VERSION
 
-version 0.008
+version 1.000
 
 # SYNOPSIS
 
@@ -12,18 +12,15 @@ version 0.008
 
     # create the sender object
     my $sender = SMS::Send->new('KR::CoolSMS',
-        _ssl      => 1,
-        _user     => 'keedi',
-        _password => 'mypass',
-        _type     => 'sms',
-        _from     => '01025116893',
+        _api_key    => 'XXXXXXXXXXXXXXXX',
+        _api_secret => 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+        _from       => '01025116893',
     );
 
     # send a message
     my $sent = $sender->send_sms(
-        text  => 'You message may use up to 80 chars and must be utf8',
-        to    => '01025116893',
-        _from => '02114', # you can override $self->_from
+        text  => 'You message may use up to 88 chars and must be utf8',
+        to    => '01012345678',
     );
 
     unless ( $sent->{success} ) {
@@ -34,58 +31,67 @@ version 0.008
         warn Dumper $sent->{detail};
     }
 
+    # Of course you can send LMS
+    my $sender = SMS::Send->new('KR::CoolSMS',
+        _api_key    => 'XXXXXXXXXXXXXXXX',
+        _api_secret => 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+        _type       => 'lms',
+        _from       => '01025116893',
+    );
+
+    # You can override _from or _type
+
+    # send a message
+    my $sent = $sender->send_sms(
+        text     => 'You LMS message may use up to 2000 chars and must be utf8',
+        to       => '01025116893',
+        _from    => '02114',             # you can override $self->_from
+        _type    => 'LMS',               # you can override $self->_type
+        _subject => 'This is a subject', # subject is optional & up to 40 chars
+    );
+
 # DESCRIPTION
 
 SMS::Send driver for sending SMS messages with the [coolsms SMS service](http://api.coolsms.co.kr).
-You'll need [IO::Socket::SSL](http://search.cpan.org/perldoc?IO::Socket::SSL) at least 1.84 version to use SSL support for HTTPS.
+You'll need [IO::Socket::SSL](https://metacpan.org/pod/IO::Socket::SSL) at least 1.84 version to use SSL support for HTTPS.
 
 # ATTRIBUTES
 
 ## \_url
 
-Do not change this value except for testing purpose.
-Default is `"api.coolsms.co.kr/sendmsg"`.
+DO NOT change this value except for testing purpose.
+Default is `"api.coolsms.co.kr/1/send"`.
 
 ## \_agent
 
 The agent value is sent as the "User-Agent" header in the HTTP requests.
 Default is `"SMS-Send-KR-CoolSMS/#.###"`.
 
-## \_ssl
-
-If this is set, then use HTTPS rather than HTTP.
-Default is `0`.
-
 ## \_timeout
 
 HTTP request timeout seconds.
 Default is `3`.
 
-## \_user
+## \_api\_key
 
-__Required__.
-Username to login for coolsms.
+**Required**.
+coolsms API key for REST API.
 
-## \_password
+## \_api\_secret
 
-__Required__.
-Password to login for coolsms.
-
-## \_enc
-
-Password encryption method to transfer password over HTTP/HTTPS.
-Currently only `"md5"` is supported.
+**Required**.
+coolsms API secret for REST API.
 
 ## \_from
 
-__Required__.
+**Required**.
 Source number to send sms.
 
 ## \_type
 
 Type of sms.
-Currently only `sms` is supported.
-Default is `"sms"`.
+Currently `SMS` and `LMS` are supported.
+Default is `"SMS"`.
 
 ## \_country
 
@@ -93,30 +99,38 @@ Country code to route the sms.
 This is for destination number.
 Default is `"KR"`.
 
+## \_delay
+
+Delay second between sending sms.
+Default is `0`.
+
 # METHODS
 
 ## new
 
-This constructor should not be called directly. See [SMS::Send](http://search.cpan.org/perldoc?SMS::Send) for details.
+This constructor should not be called directly. See [SMS::Send](https://metacpan.org/pod/SMS::Send) for details.
 
 ## send\_sms
 
-This constructor should not be called directly. See [SMS::Send](http://search.cpan.org/perldoc?SMS::Send) for details.
+This constructor should not be called directly. See [SMS::Send](https://metacpan.org/pod/SMS::Send) for details.
 
 Available parameters are:
 
 - text
 - to
+- \_from
+- \_country
+- \_type
+- \_delay
+- \_subject
 - \_epoch
-- \_mid
-- \_gid
 
 # SEE ALSO
 
-- [SMS::Send](http://search.cpan.org/perldoc?SMS::Send)
-- [SMS::Send::Driver](http://search.cpan.org/perldoc?SMS::Send::Driver)
-- [IO::Socket::SSL](http://search.cpan.org/perldoc?IO::Socket::SSL)
-- [coolsms API Manual](http://api.coolsms.co.kr)
+- [SMS::Send](https://metacpan.org/pod/SMS::Send)
+- [SMS::Send::Driver](https://metacpan.org/pod/SMS::Send::Driver)
+- [IO::Socket::SSL](https://metacpan.org/pod/IO::Socket::SSL)
+- [coolsms REST API](http://www.coolsms.co.kr/REST_API)
 
 # AUTHOR
 
@@ -124,7 +138,7 @@ Keedi Kim - 김도형 <keedi@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Keedi Kim.
+This software is copyright (c) 2014 by Keedi Kim.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

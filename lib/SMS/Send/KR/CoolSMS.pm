@@ -306,9 +306,9 @@ __END__
     my $sent = $sender->send_sms(
         text     => 'You LMS message may use up to 2000 chars and must be utf8',
         to       => '01025116893',
-        _from    => '02114', # you can override $self->_from
-        _type    => 'LMS', # you can override $self->_type
-        _subject => 'This is a subject', # subject is optional and up to 40 chars
+        _from    => '02114',             # you can override $self->_from
+        _type    => 'LMS',               # you can override $self->_type
+        _subject => 'This is a subject', # subject is optional & up to 40 chars
     );
 
 

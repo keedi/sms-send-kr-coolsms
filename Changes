@@ -1,5 +1,8 @@
 Release history for SMS::Send::KR::CoolSMS
 
+    - use REST API rather than old API
+    - support LMS
+
 0.008       2013-03-08 20:20:19 Asia/Seoul
     - support overriding `_from` when sending SMS
 

@@ -11,7 +11,7 @@ use HTTP::Tiny;
 use JSON;
 use String::Random;
 
-our $URL     = "https://api.coolsms.co.kr/1";
+our $URL     = "https://api.coolsms.co.kr/sms/1.1";
 our $AGENT   = 'SMS-Send-KR-CoolSMS/' . $SMS::Send::KR::CoolSMS::VERSION;
 our $TIMEOUT = 3;
 our $TYPE    = 'SMS';

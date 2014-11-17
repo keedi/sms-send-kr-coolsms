@@ -4,7 +4,7 @@ SMS::Send::KR::CoolSMS - An SMS::Send driver for the coolsms.co.kr service
 
 # VERSION
 
-version 1.000
+version 1.001
 
 # SYNOPSIS
 
@@ -49,6 +49,11 @@ version 1.000
         _type    => 'LMS',               # you can override $self->_type
         _subject => 'This is a subject', # subject is optional & up to 40 chars
     );
+
+    # check the balance
+    my $balance = $sender->balance;
+    printf "cash: \n", $banalce->cash;
+    printf "point: \n", $banalce->point;
 
 # DESCRIPTION
 
@@ -124,6 +129,10 @@ Available parameters are:
 - \_delay
 - \_subject
 - \_epoch
+
+## balance
+
+This method checks the balance.
 
 # SEE ALSO
 

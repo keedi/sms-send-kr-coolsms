@@ -349,8 +349,10 @@ __END__
 
     # check the balance
     my $balance = $sender->balance;
-    printf "cash: \n", $banalce->cash;
-    printf "point: \n", $banalce->point;
+    if ( $balance->{success} ) {
+        printf "cash: \n", $banalce->{detail}{cash};
+        printf "point: \n", $banalce->{detail}{point};
+    }
 
 
 =head1 DESCRIPTION

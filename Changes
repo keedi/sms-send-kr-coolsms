@@ -1,5 +1,7 @@
 Release history for SMS::Send::KR::CoolSMS
 
+    - fix send_sms bug: fix typo
+
 1.002       2014-11-18 11:43:55 Asia/Seoul
     - update document
 

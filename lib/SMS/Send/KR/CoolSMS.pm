@@ -266,7 +266,7 @@ sub send_sms {
     undef $subject if $type =~ m/SMS/i;
 
     my %form = (
-        $self->auth_params, # authentication
+        $self->_auth_params, # authentication
         to       => $to,
         from     => $from,
         text     => $text,
